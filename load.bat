@@ -1,6 +1,6 @@
 @echo off
 
-:: Copyright 2021 HCL Technologies
+:: Copyright 2021, 2023 HCL Technologies
 ::
 :: Licensed under the Apache License, Version 2.0 (the "License");
 :: you may not use this file except in compliance with the License.
@@ -29,21 +29,25 @@ IF exist %filePath% (
 cd %filePath%
 set listOfImages[0]=DX_DOCKER_IMAGE_CONTENT_COMPOSER:hcl-dx-content-composer
 set listOfImages[1]=DX_DOCKER_IMAGE_IMAGE_PROCESSOR:hcl-dx-image-processor
-set listOfImages[2]=DX_DOCKER_IMAGE_DATABASE_DIGITAL_ASSET_MANAGER:hcl-dx-persistence-image
-set listOfImages[3]=DX_DOCKER_IMAGE_DIGITAL_ASSET_MANAGER:hcl-dx-digital-asset-manager
-set listOfImages[4]=DX_DOCKER_IMAGE_RING_API:hcl-dx-ringapi
-set listOfImages[5]=DX_DOCKER_IMAGE_CORE:hcl-dx-core
-set listOfImages[5]=DX_DOCKER_IMAGE_DESIGN_STUDIO:hcl-dx-design-studio-image
+set listOfImages[2]=DX_DOCKER_IMAGE_DATABASE_NODE_DIGITAL_ASSET_MANAGER:hcl-dx-persistence-node-image
+set listOfImages[3]=DX_DOCKER_IMAGE_DATABASE_CONNECTION_POOL_DIGITAL_ASSET_MANAGER:hcl-dx-persistence-connection-pool
+set listOfImages[4]=DX_DOCKER_IMAGE_DIGITAL_ASSET_MANAGER:hcl-dx-digital-asset-manager
+set listOfImages[5]=DX_DOCKER_IMAGE_RING_API:hcl-dx-ringapi
+set listOfImages[6]=DX_DOCKER_IMAGE_CORE:hcl-dx-core
+set listOfImages[7]=DX_DOCKER_IMAGE_HAPROXY:hcl-dx-haproxy-image
+set listOfImages[8]=DX_DOCKER_IMAGE_PREREQS_CHECKER:hcl-dx-prereqs-checker-image
 
 SET DX_DOCKER_IMAGE_CONTENT_COMPOSER=""
 SET DX_DOCKER_IMAGE_IMAGE_PROCESSOR=""
-SET DX_DOCKER_IMAGE_DATABASE_DIGITAL_ASSET_MANAGER=""
+SET DX_DOCKER_IMAGE_DATABASE_NODE_DIGITAL_ASSET_MANAGER=""
+SET DX_DOCKER_IMAGE_DATABASE_CONNECTION_POOL_DIGITAL_ASSET_MANAGER=""
 SET DX_DOCKER_IMAGE_DIGITAL_ASSET_MANAGER=""
 SET DX_DOCKER_IMAGE_RING_API=""
 SET DX_DOCKER_IMAGE_CORE=""
-SET DX_DOCKER_IMAGE_DESIGN_STUDIO:=""
+SET DX_DOCKER_IMAGE_HAPROXY=""
+SET DX_DOCKER_IMAGE_PREREQS_CHECKER=""
 
-    for /l %%i in (0,1,5) do ( 
+    for /l %%i in (0,1,8) do ( 
         SET imageName=!listOfImages[%%i]!
         for /f "tokens=1,2 delims=:" %%a in ("!listOfImages[%%i]!") do (
             IF EXIST %%b*.tar.gz (
@@ -55,11 +59,13 @@ SET DX_DOCKER_IMAGE_DESIGN_STUDIO:=""
                         IF "!successCheck!"=="Loaded image" ( 
                             IF %%a==DX_DOCKER_IMAGE_CONTENT_COMPOSER SET DX_DOCKER_IMAGE_CONTENT_COMPOSER=!imageNameTag:~14!
                             IF %%a==DX_DOCKER_IMAGE_IMAGE_PROCESSOR SET DX_DOCKER_IMAGE_IMAGE_PROCESSOR=!imageNameTag:~14!
-                            IF %%a==DX_DOCKER_IMAGE_DATABASE_DIGITAL_ASSET_MANAGER SET DX_DOCKER_IMAGE_DATABASE_DIGITAL_ASSET_MANAGER=!imageNameTag:~14!
+                            IF %%a==DX_DOCKER_IMAGE_DATABASE_NODE_DIGITAL_ASSET_MANAGER SET DX_DOCKER_IMAGE_DATABASE_NODE_DIGITAL_ASSET_MANAGER=!imageNameTag:~14!
+                            IF %%a==DX_DOCKER_IMAGE_DATABASE_CONNECTION_POOL_DIGITAL_ASSET_MANAGER SET DX_DOCKER_IMAGE_DATABASE_CONNECTION_POOL_DIGITAL_ASSET_MANAGER=!imageNameTag:~14!
                             IF %%a==DX_DOCKER_IMAGE_DIGITAL_ASSET_MANAGER SET DX_DOCKER_IMAGE_DIGITAL_ASSET_MANAGER=!imageNameTag:~14!
                             IF %%a==DX_DOCKER_IMAGE_RING_API SET DX_DOCKER_IMAGE_RING_API=!imageNameTag:~14!
                             IF %%a==DX_DOCKER_IMAGE_CORE SET DX_DOCKER_IMAGE_CORE=!imageNameTag:~14!
-                            IF %%a==DX_DOCKER_IMAGE_DESIGN_STUDIO SET DX_DOCKER_DESIGN_STUDIO=!imageNameTag:~14!
+                            IF %%a==DX_DOCKER_IMAGE_HAPROXY SET DX_DOCKER_IMAGE_HAPROXY=!imageNameTag:~14!
+                            IF %%a==DX_DOCKER_IMAGE_PREREQS_CHECKER SET DX_DOCKER_IMAGE_PREREQS_CHECKER=!imageNameTag:~14!
                         ) ELSE (
                             call echo "Error occured while loading %%b*.tar.gz file into docker"
                         )
@@ -84,16 +90,20 @@ IF %%m==DX_DOCKER_IMAGE_CONTENT_COMPOSER  (
     IF %DX_DOCKER_IMAGE_CONTENT_COMPOSER%=="" ( echo %%m=%%n) ELSE ( echo %%m=%DX_DOCKER_IMAGE_CONTENT_COMPOSER%)
 ) ELSE IF %%m==DX_DOCKER_IMAGE_IMAGE_PROCESSOR (
     IF %DX_DOCKER_IMAGE_IMAGE_PROCESSOR%=="" ( echo %%m=%%n) ELSE ( echo %%m=%DX_DOCKER_IMAGE_IMAGE_PROCESSOR%)
-) ELSE IF %%m==DX_DOCKER_IMAGE_DATABASE_DIGITAL_ASSET_MANAGER (
-    IF %DX_DOCKER_IMAGE_DATABASE_DIGITAL_ASSET_MANAGER%=="" ( echo %%m=%%n) ELSE ( echo %%m=%DX_DOCKER_IMAGE_DATABASE_DIGITAL_ASSET_MANAGER%)
+) ELSE IF %%m==DX_DOCKER_IMAGE_DATABASE_NODE_DIGITAL_ASSET_MANAGER (
+    IF %DX_DOCKER_IMAGE_DATABASE_NODE_DIGITAL_ASSET_MANAGER%=="" ( echo %%m=%%n) ELSE ( echo %%m=%DX_DOCKER_IMAGE_DATABASE_NODE_DIGITAL_ASSET_MANAGER%)
+) ELSE IF %%m==DX_DOCKER_IMAGE_DATABASE_CONNECTION_POOL_DIGITAL_ASSET_MANAGER (
+    IF %DX_DOCKER_IMAGE_DATABASE_CONNECTION_POOL_DIGITAL_ASSET_MANAGER%=="" ( echo %%m=%%n) ELSE ( echo %%m=%DX_DOCKER_IMAGE_DATABASE_CONNECTION_POOL_DIGITAL_ASSET_MANAGER%)
 ) ELSE IF %%m==DX_DOCKER_IMAGE_DIGITAL_ASSET_MANAGER (
     IF %DX_DOCKER_IMAGE_DIGITAL_ASSET_MANAGER%=="" ( echo %%m=%%n) ELSE ( echo %%m=%DX_DOCKER_IMAGE_DIGITAL_ASSET_MANAGER%)
 ) ELSE IF %%m==DX_DOCKER_IMAGE_RING_API (
     IF %DX_DOCKER_IMAGE_RING_API%=="" ( echo %%m=%%n) ELSE ( echo %%m=%DX_DOCKER_IMAGE_RING_API%)
 ) ELSE IF %%m==DX_DOCKER_IMAGE_CORE (
-    IF %DX_DOCKER_IMAGE_CORE%=="" ( echo %%m=%%n) ELSE ( echo %%m=%DX_DOCKER_IMAGE_CORE%) 
-) ELSE IF %%m==DX_DOCKER_IMAGE_DESIGN_STUDIO (
-    IF %DX_DOCKER_IMAGE_DESIGN_STUDIO%=="" ( echo %%m=%%n) ELSE ( echo %%m=%DX_DOCKER_IMAGE_DESIGN_STUDIO%)    
+    IF %DX_DOCKER_IMAGE_CORE%=="" ( echo %%m=%%n) ELSE ( echo %%m=%DX_DOCKER_IMAGE_CORE%)
+) ELSE IF %%m==DX_DOCKER_IMAGE_HAPROXY (
+    IF %DX_DOCKER_IMAGE_HAPROXY%=="" ( echo %%m=%%n) ELSE ( echo %%m=%DX_DOCKER_IMAGE_HAPROXY%)
+) ELSE IF %%m==DX_DOCKER_IMAGE_PREREQS_CHECKER (
+    IF %DX_DOCKER_IMAGE_PREREQS_CHECKER%=="" ( echo %%m=%%n) ELSE ( echo %%m=%DX_DOCKER_IMAGE_PREREQS_CHECKER%)
 ) else ( echo %%m)
 ))>result.properties
 DEL dx.properties

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Copyright 2021 HCL Technologies
+# Copyright 2021, 2023 HCL Technologies
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -27,4 +27,5 @@ unset DX_DOCKER_IMAGE_DAM
 unset DX_DOCKER_IMAGE_IMAGE_PROCESSOR
 unset DX_DOCKER_IMAGE_CC
 unset DX_DOCKER_IMAGE_DAM_DB
-unset DX_DOCKER_IMAGE_DS
+unset DX_DOCKER_IMAGE_HAPROXY
+unset DX_DOCKER_IMAGE_PREREQS_CHECKER

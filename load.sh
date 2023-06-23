@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Copyright 2021 HCL Technologies
+# Copyright 2021, 2023 HCL Technologies
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -29,11 +29,10 @@ function updateProperties ()
     replaceValue="$1=$2"
     pathValue=$3
     strSearchAndReplace="s/${searchValue}.*/${replaceValue//\//\\/}/"
-    sed -i '' ${strSearchAndReplace} ${pathValue}/dx.properties
-}
+    sed -i.bck "${strSearchAndReplace}" ${pathValue}/dx.properties
+}       
 
 CWD="$PWD"
-
 
 # Begins
 
@@ -54,11 +53,13 @@ fi
 listOfImages=()
 listOfImages+=("DX_DOCKER_IMAGE_CONTENT_COMPOSER:hcl-dx-content-composer-image")
 listOfImages+=("DX_DOCKER_IMAGE_IMAGE_PROCESSOR:hcl-dx-image-processor")
-listOfImages+=("DX_DOCKER_IMAGE_DATABASE_DIGITAL_ASSET_MANAGER:hcl-dx-persistence-image")
+listOfImages+=("DX_DOCKER_IMAGE_DATABASE_NODE_DIGITAL_ASSET_MANAGER:hcl-dx-persistence-node-image")
+listOfImages+=("DX_DOCKER_IMAGE_DATABASE_CONNECTION_POOL_DIGITAL_ASSET_MANAGER:hcl-dx-persistence-connection-pool")
 listOfImages+=("DX_DOCKER_IMAGE_DIGITAL_ASSET_MANAGER:hcl-dx-digital-asset-manager")
 listOfImages+=("DX_DOCKER_IMAGE_RING_API:hcl-dx-ringapi")
 listOfImages+=("DX_DOCKER_IMAGE_CORE:hcl-dx-core")
-listOfImages+=("DX_DOCKER_IMAGE_DESIGN_STUDIO:hcl-dx-design-studio-image")
+listOfImages+=("DX_DOCKER_IMAGE_HAPROXY:hcl-dx-haproxy-image")
+listOfImages+=("DX_DOCKER_IMAGE_PREREQS_CHECKER:hcl-dx-prereqs-checker-image")
 
 
 # Loop through the array to upload the docker image and update the properties file
